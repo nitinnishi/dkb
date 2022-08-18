@@ -1,0 +1,11 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /dkb
+  shutdown: graceful
+
+mongo-db:
+  host: localhost
+  dbname: tinyurldb
+  username: admin
+  password: 2R2GbqAGsL
