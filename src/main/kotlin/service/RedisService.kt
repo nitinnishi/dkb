@@ -11,7 +11,7 @@ class RedisService(val redisTemplate: RedisTemplate<String, Any>) {
 
     fun save(keyUrl: String?, valueUrl: String?): Boolean {
         val valueOperations = redisTemplate.opsForValue()
-        return valueOperations.setIfAbsent(keyUrl, valueUrl, 15, TimeUnit.DAYS)
+        return valueOperations.setIfAbsent(keyUrl, valueUrl, 10, TimeUnit.DAYS)
     }
 
     @Throws(Exception::class)
@@ -28,7 +28,7 @@ class RedisService(val redisTemplate: RedisTemplate<String, Any>) {
     @Throws(Exception::class)
     fun extendTimeToLive(urlKey: String?) {
         try {
-            redisTemplate.expire(urlKey, 15, TimeUnit.MINUTES)
+            redisTemplate.expire(urlKey, 10, TimeUnit.SECONDS)
         } catch (e: java.lang.Exception) {
             println("Error extending time to live")
             throw Exception("Error extending time to live")
