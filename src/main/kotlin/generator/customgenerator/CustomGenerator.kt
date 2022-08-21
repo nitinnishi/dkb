@@ -16,14 +16,14 @@ class CustomGenerator(private val redisService: RedisService, private val urlSto
         // check if there is existing long url then return short url for that
         val shortUrl: String? = redisService[longUrl]
         if (StringUtils.hasText(shortUrl)) return shortUrl
-        val randomString: String?
+        var randomString: String?
         while (true) {
             randomString = Util.getRandomShortString()
-            if (redisService.save(longUrl, randomString)) {
+            if (!urlStoreService.isShortUrlExist(randomString) && redisService.save(longUrl, randomString)) {
                 redisService.save(randomString, longUrl)
                 urlStoreService.saveShortUrl(UrlDto(randomString, longUrl))
+                break
             }
-            break
         }
         return randomString
     }

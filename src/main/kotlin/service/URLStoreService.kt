@@ -10,13 +10,17 @@ class URLStoreService(val urlRepository: UrlRepository) {
     fun getShortUrl(shortUrl: String): UrlDto {
         val urlDto = try {
             urlRepository.findById(shortUrl).get()
-        }catch (nse:NoSuchElementException){
-            UrlDto("","")
+        } catch (nse: NoSuchElementException) {
+            UrlDto("", "")
         }
         return urlDto
     }
 
     fun saveShortUrl(urlDto: UrlDto): UrlDto {
         return urlRepository.save(urlDto)
+    }
+
+    fun isShortUrlExist(shortID: String): Boolean {
+        return urlRepository.existsById(shortID)
     }
 }
