@@ -6,6 +6,7 @@ import org.dkbfactory.model.ResponseCode
 import org.dkbfactory.model.UrlDto
 import org.dkbfactory.service.ShortUrlService
 import org.springframework.http.HttpEntity
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.ModelAndView
 
@@ -15,8 +16,8 @@ class LittleURLController(val shortUrlService: ShortUrlService) {
     fun createLittleUrl(@RequestBody urlDto: UrlDto): HttpEntity<CommonResponse<Any>> {
 
         var urlbody: UrlDto = shortUrlService.createShortUrl(urlDto.longUrl)
-        return if(urlbody.shortUrl.equals("")) {
-             CommonResponse<Any>(
+        return if (urlbody.shortUrl.equals("")) {
+            CommonResponse<Any>(
                 status = CommonStatusData(
                     code = ResponseCode.ERROR.responseCode,
                     message = ResponseCode.ERROR.responseMessage
@@ -24,7 +25,7 @@ class LittleURLController(val shortUrlService: ShortUrlService) {
                 data = "Error creating short url"
             ).build(ResponseCode.ERROR.httpStatus)
         } else {
-             CommonResponse<Any>(
+            CommonResponse<Any>(
                 status = CommonStatusData(
                     code = ResponseCode.SUCCESS.responseCode,
                     message = ResponseCode.SUCCESS.responseMessage
@@ -36,6 +37,12 @@ class LittleURLController(val shortUrlService: ShortUrlService) {
 
     @GetMapping("/{shortUrl}")
     fun getLittleUrl(@PathVariable("shortUrl") shortUrl: String): ModelAndView? {
-        return ModelAndView("redirect:" + shortUrlService.getShortUrl(shortUrl))
+        var shortUrl = shortUrlService.getShortUrl(shortUrl)
+        return if (shortUrl.equals("")) {
+            println("bad request")
+            return ModelAndView("", HttpStatus.BAD_REQUEST)
+        } else {
+            return ModelAndView("redirect:$shortUrl")
+        }
     }
 }
