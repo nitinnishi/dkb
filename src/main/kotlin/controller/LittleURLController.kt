@@ -15,7 +15,7 @@ class LittleURLController(val shortUrlService: ShortUrlService) {
     @PostMapping("/v1/create")
     fun createLittleUrl(@RequestBody urlDto: UrlDto): HttpEntity<CommonResponse<Any>> {
 
-        var urlbody: UrlDto = shortUrlService.createShortUrl(urlDto.longUrl)
+        val urlbody: UrlDto = shortUrlService.createShortUrl(urlDto.longUrl)
         return if (urlbody.shortUrl.equals("")) {
             CommonResponse<Any>(
                 status = CommonStatusData(
@@ -37,12 +37,12 @@ class LittleURLController(val shortUrlService: ShortUrlService) {
 
     @GetMapping("/{shortUrl}")
     fun getLittleUrl(@PathVariable("shortUrl") shortUrl: String): ModelAndView? {
-        var shortUrl = shortUrlService.getShortUrl(shortUrl)
-        return if (shortUrl.equals("")) {
+        val longUrl = shortUrlService.getShortUrl(shortUrl)
+        return if (longUrl == "") {
             println("bad request")
             return ModelAndView("", HttpStatus.BAD_REQUEST)
         } else {
-            return ModelAndView("redirect:$shortUrl")
+            return ModelAndView("redirect:$longUrl")
         }
     }
 }
